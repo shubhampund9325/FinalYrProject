@@ -1,0 +1,7 @@
+flask==3.1.0
+opencv-python==4.11.0.86
+numpy==2.0.2
+Pillow==11.2.0
+ultralytics==8.3.99
+google-generativeai==0.8.4
+python-dotenv==1.1.0 

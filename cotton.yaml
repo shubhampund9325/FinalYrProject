@@ -1,0 +1,7 @@
+path: /Users/shubhampund9767/Documents/Cotton-Disease-Recognition-using-YOLO-Algorithm--1/Cotton-Disease-Specific
+train: /Users/shubhampund9767/Documents/Cotton-Disease-Recognition-using-YOLO-Algorithm--1/Cotton-Disease-Specific/trainning/images
+val: /Users/shubhampund9767/Documents/Cotton-Disease-Recognition-using-YOLO-Algorithm--1/Cotton-Disease-Specific/validation/images
+
+nc: 8
+names: ['Aphids', 'Army worm', 'Bacterial blight', 'Cotton Boll Rot','Green Cotton Boll' ,
+        'Healthy', 'Powdery mildew', 'Target spot' ]
