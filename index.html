@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cotton Disease Detection</title>
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Animate.css for animations -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { 
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4f1fe 100%);
+    }
+    
+    /* Cotton-themed animations */
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+      100% { transform: translateY(0px); }
+    }
+    
+    @keyframes cotton-float {
+      0% { transform: translateY(0) rotate(0deg); opacity: 0.8; }
+      100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+    }
+    
+    .cotton-animation {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 50%;
+      pointer-events: none;
+      animation: cotton-float linear infinite;
+    }
+    
+    .hover-scale:hover { 
+      transform: scale(1.05);
+      transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+    }
+    
+    .transition-all {
+      transition: all 0.3s ease-in-out;
+    }
+    
+    .card-glow:hover {
+      box-shadow: 0 10px 25px -5px rgba(74, 146, 203, 0.4);
+    }
+    
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #4a92cb;
+      border-radius: 4px;
+    }
+    
+    /* Gemini content styling */
+    .gemini-content {
+      line-height: 1.8;
+    }
+    .gemini-content h1, 
+    .gemini-content h2, 
+    .gemini-content h3 {
+      font-weight: 600;
+      margin: 1em 0 0.5em;
+      color: #2c5282;
+    }
+    .gemini-content h1 { font-size: 1.5em; border-bottom: 2px solid #bee3f8; padding-bottom: 0.3em; }
+    .gemini-content h2 { font-size: 1.3em; }
+    .gemini-content h3 { font-size: 1.1em; }
+    .gemini-content ul { 
+      list-style-type: none;
+      margin-left: 0;
+      padding-left: 1em;
+    }
+    .gemini-content ul li {
+      position: relative;
+      padding-left: 1.5em;
+      margin-bottom: 0.5em;
+    }
+    .gemini-content ul li:before {
+      content: "•";
+      color: #4a92cb;
+      font-weight: bold;
+      position: absolute;
+      left: 0;
+    }
+    .gemini-content p { 
+      margin-bottom: 1em;
+      color: #4a5568;
+    }
+    .gemini-content strong {
+      color: #2c5282;
+    }
+  </style>
+</head>
+<body class="m-0 p-0 min-h-screen">
+  <!-- Cotton animation elements -->
+  <div id="cotton-elements"></div>
+  
+  <!-- Floating cotton decoration -->
+  <div class="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+    <div class="absolute top-10 left-1/4 w-16 h-16 bg-white rounded-full opacity-20 animate-float animation-delay-100"></div>
+    <div class="absolute top-1/3 left-3/4 w-12 h-12 bg-white rounded-full opacity-20 animate-float animation-delay-300"></div>
+    <div class="absolute top-2/3 left-1/5 w-14 h-14 bg-white rounded-full opacity-20 animate-float animation-delay-500"></div>
+    <div class="absolute top-3/4 left-2/3 w-10 h-10 bg-white rounded-full opacity-20 animate-float animation-delay-700"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="fixed top-0 left-0 w-full h-20 bg-white/90 backdrop-blur-md shadow-lg z-50 flex items-center px-6">
+    <div class="container mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-4 animate__animated animate__fadeInLeft">
+        <div class="relative">
+          <img src="https://cdn-icons-png.flaticon.com/512/3058/3058973.png" alt="cotton-logo" class="h-14 w-14">
+          <div class="absolute -inset-2 bg-blue-100 rounded-full z-0 opacity-70 animate-pulse"></div>
+        </div>
+        <span class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-emerald-600">
+          Cotton Vision AI
+        </span>
+      </div>
+      
+      <nav class="hidden md:flex space-x-6 animate__animated animate__fadeInRight">
+        <a href="#" class="text-gray-700 hover:text-blue-600 transition-colors font-medium">Home</a>
+        <a href="#" class="text-gray-700 hover:text-blue-600 transition-colors font-medium">About</a>
+        <a href="#" class="text-gray-700 hover:text-blue-600 transition-colors font-medium">Diseases</a>
+        <a href="#" class="text-gray-700 hover:text-blue-600 transition-colors font-medium">Contact</a>
+      </nav>
+    </div>
+  </header>
+  
+  <!-- Main Content -->
+  <main class="pt-28 pb-24 px-4">
+    <div class="container max-w-6xl mx-auto">
+      <!-- Animated title -->
+      <div class="text-center mb-12 animate__animated animate__fadeInDown">
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+          <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-emerald-600">
+            Cotton Disease Detection
+          </span>
+        </h1>
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+          Advanced AI-powered detection system for cotton plant diseases with expert recommendations
+        </p>
+      </div>
+  
+      <!-- Tabs with animated border -->
+      <div class="tab-container mb-8 animate__animated animate__fadeIn">
+        <div class="flex flex-col sm:flex-row gap-3 mb-6 justify-center">
+          <button class="tab-button active py-3 px-6 flex items-center gap-3 bg-white text-blue-600 rounded-xl shadow-md hover-scale transition-all card-glow relative overflow-hidden group" data-tab="camera">
+            <div class="absolute inset-0 bg-gradient-to-r from-blue-50 to-emerald-50 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+            <span class="relative font-semibold">Live Camera</span>
+          </button>
+  
+          <button class="tab-button py-3 px-6 flex items-center gap-3 bg-white text-gray-700 rounded-xl shadow-md hover-scale transition-all card-glow relative overflow-hidden group" data-tab="upload">
+            <div class="absolute inset-0 bg-gradient-to-r from-blue-50 to-emerald-50 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+            </svg>
+            <span class="relative font-semibold">Upload Image</span>
+          </button>
+        </div>
+        
+        <div class="relative">
+          <div class="absolute bottom-0 left-0 h-1 bg-blue-500 rounded-full transition-all duration-300" id="tab-indicator"></div>
+        </div>
+      </div>
+  
+      <!-- Camera Tab -->
+      <div class="tab-content active animate__animated animate__fadeIn" id="camera-tab">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div class="video-section p-6 bg-white rounded-2xl shadow-xl transition-all card-glow">
+            <div class="flex items-center justify-between mb-5">
+              <h2 class="text-xl font-semibold text-gray-800 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v8a2 2 0 01-2 2h-2a2 2 0 01-2-2V6z" />
+                </svg>
+                Camera Feed
+              </h2>
+              <div class="flex items-center gap-2 text-sm text-gray-500">
+                <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span>AI Ready</span>
+              </div>
+            </div>
+            
+            <div class="relative rounded-xl overflow-hidden border-2 border-gray-200">
+              <video id="video" autoplay playsinline class="w-full h-auto aspect-video bg-gray-100"></video>
+              <canvas id="canvas" style="display: none;"></canvas>
+              <div class="absolute inset-0 flex items-center justify-center bg-black/30 hidden" id="video-overlay">
+                <div class="text-white text-center p-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-3 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  <p>Processing detection...</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="flex flex-wrap gap-3 mt-6 justify-center">
+              <button id="startCamera" class="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 hover-scale">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+                </svg>
+                Start Camera
+              </button>
+              
+              <button id="capture" class="px-6 py-2.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors flex items-center gap-2 hover-scale">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.121-1.121A2 2 0 0011.172 3H8.828a2 2 0 00-1.414.586L6.293 4.707A1 1 0 015.586 5H4zm6 9a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
+                </svg>
+                Capture & Detect
+              </button>
+              
+              <button id="stopCamera" class="px-6 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2 hover-scale">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z" clip-rule="evenodd" />
+                </svg>
+                Stop Camera
+              </button>
+            </div>
+          </div>
+  
+          <div class="result-section flex flex-col gap-6">
+            <div class="p-6 bg-white rounded-2xl shadow-xl transition-all card-glow">
+              <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                </svg>
+                Detection Results
+              </h2>
+              <div id="result" class="p-4 bg-blue-50/50 rounded-xl min-h-[180px]">
+                <div class="flex flex-col items-center justify-center h-full text-gray-500">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-3 text-blue-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                  </svg>
+                  <p>Waiting for detection...</p>
+                </div>
+              </div>
+            </div>
+            
+            <div id="processedImage" class="p-6 bg-white rounded-2xl shadow-xl transition-all card-glow hidden">
+              <h3 class="text-lg font-semibold text-gray-800 mb-3">Processed Image</h3>
+              <div class="border-2 border-gray-200 rounded-xl overflow-hidden">
+                <!-- Processed image will be injected here -->
+              </div>
+            </div>
+            
+            <div id="gemini-response-container" class="p-6 bg-white rounded-2xl shadow-xl transition-all card-glow hidden animate__animated animate__fadeIn">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-semibold text-gray-800 flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-500" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd" />
+                  </svg>
+                  AI Analysis
+                </h3>
+                <button id="read-aloud" class="p-2 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200 transition-colors">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clip-rule="evenodd" />
+                  </svg>
+                </button>
+              </div>
+              <div id="gemini-response-content" class="gemini-content text-gray-700 bg-blue-50/30 p-4 rounded-lg max-h-96 overflow-y-auto">
+                <!-- Content will be dynamically inserted here -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Upload Tab -->
+      <div class="tab-content hidden animate__animated animate__fadeIn" id="upload-tab">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div class="upload-section p-6 bg-white rounded-2xl shadow-xl transition-all card-glow">
+            <h2 class="text-xl font-semibold text-gray-800 mb-5 flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+              </svg>
+              Upload Image
+            </h2>
+            
+            <div id="dropZone" class="file-upload flex flex-col items-center justify-center p-8 border-2 border-dashed border-blue-300 rounded-xl cursor-pointer transition-all hover:border-blue-500 hover:bg-blue-50/30 text-center">
+              <div class="mb-4 p-4 bg-blue-100 rounded-full">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                </svg>
+              </div>
+              <p class="text-gray-700 font-medium mb-1">Drag & drop your image here</p>
+              <p class="text-gray-500 text-sm">or click to browse files</p>
+              <p class="text-gray-400 text-xs mt-3">Supports JPG, PNG (Max 5MB)</p>
+              <input type="file" id="fileInput" accept="image/*" class="hidden">
+              <img id="imagePreview" class="preview-image mt-6 max-w-full max-h-64 rounded-lg shadow hidden">
+            </div>
+            
+            <div class="flex justify-center mt-6">
+              <button id="detectUpload" disabled class="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 hover-scale disabled:bg-gray-300 disabled:cursor-not-allowed">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                </svg>
+                Detect Diseases
+              </button>
+            </div>
+            
+            <div id="uploadLoader" class="flex flex-col items-center justify-center mt-6 hidden">
+              <div class="loader border-4 border-[#f3f3f3] border-t-4 border-t-blue-500 rounded-full w-8 h-8 animate-spin mb-3"></div>
+              <p class="text-gray-600">Analyzing image...</p>
+            </div>
+          </div>
+          
+          <div class="result-section flex flex-col gap-6">
+            <div class="p-6 bg-white rounded-2xl shadow-xl transition-all card-glow">
+              <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                </svg>
+                Detection Results
+              </h2>
+              <div id="uploadResult" class="p-4 bg-blue-50/50 rounded-xl min-h-[180px]">
+                <div class="flex flex-col items-center justify-center h-full text-gray-500">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-3 text-blue-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                  </svg>
+                  <p>Upload an image to detect diseases</p>
+                </div>
+              </div>
+            </div>
+            
+            <div id="uploadProcessedImage" class="p-6 bg-white rounded-2xl shadow-xl transition-all card-glow hidden">
+              <h3 class="text-lg font-semibold text-gray-800 mb-3">Processed Image</h3>
+              <div class="border-2 border-gray-200 rounded-xl overflow-hidden">
+                <!-- Processed image will be injected here -->
+              </div>
+            </div>
+            
+            <div id="upload-gemini-response-container" class="p-6 bg-white rounded-2xl shadow-xl transition-all card-glow hidden animate__animated animate__fadeIn">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-semibold text-gray-800 flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-500" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd" />
+                  </svg>
+                  AI Analysis
+                </h3>
+                <button id="upload-read-aloud" class="p-2 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200 transition-colors">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clip-rule="evenodd" />
+                  </svg>
+                </button>
+              </div>
+              <div class="gemini-content text-gray-700 bg-blue-50/30 p-4 rounded-lg max-h-96 overflow-y-auto">
+                <!-- Content will be dynamically inserted here -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <!-- Footer -->
+  <footer class="fixed bottom-0 left-0 w-full bg-white/90 backdrop-blur-md border-t border-gray-200 text-gray-700 flex flex-col sm:flex-row justify-between items-center p-4 z-50">
+    <aside class="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
+      <div class="flex items-center gap-2">
+        <img src="https://cdn-icons-png.flaticon.com/512/3058/3058973.png" alt="cotton-logo" class="h-8 w-8">
+        <p class="font-medium">
+          Cotton Vision AI © <span id="year"></span>
+        </p>
+      </div>
+      <p class="text-sm text-gray-500">Advanced Cotton Disease Detection System</p>
+    </aside>
+  
+    <nav class="flex justify-center sm:justify-end mt-3 sm:mt-0">
+      <ul class="flex gap-4">
+        <li>
+          <a href="#" aria-label="Twitter" class="social-icon p-2 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200 transition-colors hover-scale">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="fill-current">
+              <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"></path>
+            </svg>
+          </a>
+        </li>
+        <li>
+          <a href="#" aria-label="GitHub" class="social-icon p-2 rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors hover-scale">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="fill-current">
+              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"></path>
+            </svg>
+          </a>
+        </li>
+        <li>
+          <a href="#" aria-label="LinkedIn" class="social-icon p-2 rounded-full bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors hover-scale">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="fill-current">
+              <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"></path>
+            </svg>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </footer>
+  
+  <!-- JavaScript -->
+  <script>
+    // Create floating cotton elements
+    function createCottonElements() {
+      const container = document.getElementById('cotton-elements');
+      const colors = ['bg-white', 'bg-blue-50', 'bg-blue-100'];
+      
+      for (let i = 0; i < 12; i++) {
+        const cotton = document.createElement('div');
+        cotton.className = `cotton-animation ${colors[Math.floor(Math.random() * colors.length)]}`;
+        
+        // Random size between 10px and 30px
+        const size = Math.random() * 20 + 10;
+        cotton.style.width = `${size}px`;
+        cotton.style.height = `${size}px`;
+        
+        // Random position
+        cotton.style.left = `${Math.random() * 100}vw`;
+        cotton.style.bottom = `-${size}px`;
+        
+        // Random animation duration between 10s and 30s
+        const duration = Math.random() * 20 + 10;
+        cotton.style.animationDuration = `${duration}s`;
+        
+        // Random delay
+        cotton.style.animationDelay = `${Math.random() * 5}s`;
+        
+        container.appendChild(cotton);
+      }
+    }
+    
+    // Initialize cotton animation
+    createCottonElements();
+    
+    // Elements for camera detection
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const resultDiv = document.getElementById('result');
+    const loader = document.getElementById('uploadLoader');
+    const startButton = document.getElementById('startCamera');
+    const stopButton = document.getElementById('stopCamera');
+    const captureButton = document.getElementById('capture');
+    const videoOverlay = document.getElementById('video-overlay');
+    let stream = null;
+    
+    // Disease information object
+    const disease_info = {
+      "Aphid": {"description": "Small, soft-bodied insects that suck sap.", "precaution": "Use resistant varieties, introduce natural predators.", "medicine": "Neem oil, Imidacloprid."},
+      "Aphids": {"description": "Rapidly multiplying sap-sucking pests.", "precaution": "Field monitoring, remove infected plants.", "medicine": "Pyrethroid-based insecticides."},
+      "Army Worm": {"description": "Caterpillars that chew leaves.", "precaution": "Pheromone traps, biological control.", "medicine": "Bacillus thuringiensis, Spinosad."},
+      "Bacterial Blight": {"description": "Water-soaked lesions leading to wilting.", "precaution": "Use disease-free seeds, crop rotation.", "medicine": "Copper-based bactericides, Streptomycin."},
+      "Cotton Boll Rot": {"description": "Fungal infection causing decay.", "precaution": "Ensure aeration, remove infected bolls.", "medicine": "Carbendazim-based fungicides."},
+      "Green Cotton Boll": {"description": "Immature bolls remain green.", "precaution": "Proper irrigation, control bollworms.", "medicine": "Mancozeb fungicide, growth regulators."},
+      "Healthy": {"description": "No disease present.", "precaution": "Good soil fertility, proper rotation.", "medicine": "No treatment needed."},
+      "Powdery Mildew": {"description": "White powdery fungal spots on leaves.", "precaution": "Avoid humidity, remove infected leaves.", "medicine": "Sulfur-based fungicides, Tebuconazole."},
+      "Target Spot": {"description": "Circular brown spots leading to defoliation.", "precaution": "Improve drainage, avoid high density.", "medicine": "Chlorothalonil, copper-based fungicides."}
+    };
+
+    async function startCamera() {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ 
+          video: { 
+            width: { ideal: 1280 }, 
+            height: { ideal: 720 },
+            facingMode: 'environment'
+          } 
+        });
+        video.srcObject = stream;
+        startButton.disabled = true;
+        stopButton.disabled = false;
+        captureButton.disabled = false;
+        
+        // Add animation to camera button
+        startButton.classList.add('animate__animated', 'animate__pulse');
+        setTimeout(() => {
+          startButton.classList.remove('animate__animated', 'animate__pulse');
+        }, 1000);
+      } catch (error) {
+        resultDiv.innerHTML = `
+          <div class="p-3 bg-red-100 border-l-4 border-red-500 text-red-700">
+            <p class="font-medium">Error accessing camera:</p>
+            <p>${error.message}</p>
+          </div>
+        `;
+      }
+    }
+
+    function stopCamera() {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        video.srcObject = null;
+        startButton.disabled = false;
+        stopButton.disabled = true;
+        captureButton.disabled = true;
+        
+        // Add animation to stop button
+        stopButton.classList.add('animate__animated', 'animate__pulse');
+        setTimeout(() => {
+          stopButton.classList.remove('animate__animated', 'animate__pulse');
+        }, 1000);
+      }
+    }
+
+    async function captureAndDetect() {
+      if (!stream) return;
+
+      // Show processing overlay
+      videoOverlay.classList.remove('hidden');
+      resultDiv.innerHTML = '<p class="text-center text-gray-500">Processing...</p>';
+      document.getElementById('gemini-response-container').classList.add('hidden');
+      document.getElementById('processedImage').classList.add('hidden');
+      
+      // Add animation to capture button
+      captureButton.classList.add('animate__animated', 'animate__pulse');
+      setTimeout(() => {
+        captureButton.classList.remove('animate__animated', 'animate__pulse');
+      }, 1000);
+
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      ctx.drawImage(video, 0, 0);
+
+      try {
+          const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg'));
+          const formData = new FormData();
+          formData.append('image', blob, 'capture.jpg');
+
+          const response = await fetch('/detect', {
+              method: 'POST',
+              body: formData
+          });
+
+          if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+          const data = await response.json();
+          console.log('API Response:', data);
+
+          if (data.status === 'success') {
+              let resultsHTML = '<div class="space-y-4">';
+              if (data.detections && data.detections.length > 0) {
+                  resultsHTML += `
+                      <h4 class="text-lg font-semibold text-gray-800">Detected Diseases:</h4>
+                      <div class="grid grid-cols-1 gap-3">
+                          ${data.detections.map(det => {
+                              const confidence = Math.min(det.confidence || 0, 100).toFixed(2);
+                              const disease = disease_info[det.class] || {};
+                              return `
+                                  <div class="p-4 bg-white rounded-lg shadow border-l-4 border-blue-500 hover:bg-blue-50 transition-colors">
+                                      <div class="flex justify-between items-start">
+                                          <div>
+                                              <h5 class="font-bold text-blue-600">${det.class}</h5>
+                                              <p class="text-sm text-gray-600">Confidence: ${confidence}%</p>
+                                          </div>
+                                          <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">${confidence}%</span>
+                                      </div>
+                                      <div class="mt-2 text-sm">
+                                          <p class="text-gray-700"><span class="font-medium">Description:</span> ${disease.description}</p>
+                                          <p class="text-gray-700 mt-1"><span class="font-medium">Precaution:</span> ${disease.precaution}</p>
+                                          <p class="text-gray-700 mt-1"><span class="font-medium">Treatment:</span> ${disease.medicine}</p>
+                                      </div>
+                                  </div>
+                              `;
+                          }).join('')}
+                      </div>
+                  `;
+              } else {
+                  resultsHTML += `
+                    <div class="p-4 bg-green-100 border-l-4 border-green-500 rounded-lg">
+                      <div class="flex items-center gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <div>
+                          <h5 class="font-bold text-green-800">No diseases detected</h5>
+                          <p class="text-green-700">The plant appears healthy</p>
+                        </div>
+                      </div>
+                    </div>
+                  `;
+              }
+              resultsHTML += '</div>';
+              resultDiv.innerHTML = resultsHTML;
+              
+              // Handle Gemini response
+              if (data.gemini_response) {
+                  const geminiContainer = document.getElementById('gemini-response-container');
+                  const geminiContent = document.getElementById('gemini-response-content');
+                  
+                  geminiContainer.classList.remove('hidden', 'animate__fadeIn');
+                  void geminiContainer.offsetWidth; // Trigger reflow
+                  geminiContainer.classList.add('animate__animated', 'animate__fadeIn');
+                  
+                  // Safely handle HTML content
+                  geminiContent.innerHTML = typeof data.gemini_response === 'string' ? 
+                      data.gemini_response : 
+                      (data.gemini_response.text || '<p>AI analysis not available</p>');
+              }
+
+              // Display processed image if available
+              if (data.processed_image) {
+                  const processedImageContainer = document.getElementById('processedImage');
+                  processedImageContainer.innerHTML = `
+                      <img src="/processed/${data.processed_image}" alt="Processed image" 
+                           class="w-full h-auto rounded-lg border border-gray-200 shadow-sm">
+                  `;
+                  processedImageContainer.classList.remove('hidden');
+                  processedImageContainer.classList.add('animate__animated', 'animate__fadeIn');
+              }
+          } else {
+              resultDiv.innerHTML = `
+                <div class="p-3 bg-red-100 border-l-4 border-red-500 text-red-700 rounded">
+                  <p class="font-medium">Detection error:</p>
+                  <p>${data.error || 'Unknown error occurred'}</p>
+                </div>
+              `;
+          }
+      } catch (error) {
+          console.error('Detection error:', error);
+          resultDiv.innerHTML = `
+            <div class="p-3 bg-red-100 border-l-4 border-red-500 text-red-700 rounded">
+              <p class="font-medium">Detection error:</p>
+              <p>${error.message}</p>
+            </div>
+          `;
+      } finally {
+          videoOverlay.classList.add('hidden');
+      }
+    }
+
+    // Text-to-speech functionality
+    function readAloud(text) {
+      if ('speechSynthesis' in window) {
+        const speech = new SpeechSynthesisUtterance();
+        speech.text = text.replace(/<[^>]*>/g, ''); // Remove HTML tags
+        speech.volume = 1;
+        speech.rate = 0.9;
+        speech.pitch = 1;
+        window.speechSynthesis.speak(speech);
+      } else {
+        alert('Text-to-speech is not supported in your browser');
+      }
+    }
+
+    // Event listeners for read aloud buttons
+    document.getElementById('read-aloud')?.addEventListener('click', () => {
+      const content = document.getElementById('gemini-response-content')?.textContent;
+      if (content) readAloud(content);
+    });
+
+    document.getElementById('upload-read-aloud')?.addEventListener('click', () => {
+      const content = document.querySelector('#upload-gemini-response-container .gemini-content')?.textContent;
+      if (content) readAloud(content);
+    });
+
+    startButton.addEventListener('click', startCamera);
+    stopButton.addEventListener('click', stopCamera);
+    captureButton.addEventListener('click', captureAndDetect);
+    stopButton.disabled = true;
+    captureButton.disabled = true;
+
+    // Tab switching with animated indicator
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabContents = document.querySelectorAll('.tab-content');
+    const tabIndicator = document.getElementById('tab-indicator');
+    
+    function updateTabIndicator(activeButton) {
+      const buttonRect = activeButton.getBoundingClientRect();
+      const containerRect = activeButton.parentElement.getBoundingClientRect();
+      
+      tabIndicator.style.width = `${buttonRect.width}px`;
+      tabIndicator.style.left = `${buttonRect.left - containerRect.left}px`;
+    }
+
+    tabButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const tabId = button.dataset.tab;
+        
+        // Update active tab button
+        tabButtons.forEach(btn => {
+          btn.classList.remove('active', 'bg-blue-600', 'text-white');
+          btn.classList.add('bg-white', 'text-gray-700');
+        });
+        button.classList.add('active', 'bg-blue-600', 'text-white');
+        button.classList.remove('bg-white', 'text-gray-700');
+        
+        // Update tab indicator position
+        updateTabIndicator(button);
+        
+        // Show corresponding tab content
+        tabContents.forEach(content => {
+          content.classList.remove('active');
+          content.classList.add('hidden');
+          if (content.id === `${tabId}-tab`) {
+            content.classList.remove('hidden');
+            content.classList.add('active');
+          }
+        });
+        
+        // Stop camera if switching away from camera tab
+        if (tabId !== 'camera' && stream) {
+          stopCamera();
+        }
+        
+        // Add animation to tab button
+        button.classList.add('animate__animated', 'animate__pulse');
+        setTimeout(() => {
+          button.classList.remove('animate__animated', 'animate__pulse');
+        }, 500);
+      });
+    });
+
+    // Initialize tab indicator position
+    const activeTabButton = document.querySelector('.tab-button.active');
+    if (activeTabButton) {
+      updateTabIndicator(activeTabButton);
+    }
+
+    // File upload handling
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const imagePreview = document.getElementById('imagePreview');
+    const detectUploadBtn = document.getElementById('detectUpload');
+    const uploadResult = document.getElementById('uploadResult');
+    const uploadProcessedImage = document.getElementById('uploadProcessedImage');
+    const uploadGeminiContainer = document.getElementById('upload-gemini-response-container');
+
+    dropZone.addEventListener('click', () => fileInput.click());
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('border-blue-300');
+      dropZone.classList.add('border-blue-500', 'bg-blue-50/50');
+    });
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.classList.remove('border-blue-500', 'bg-blue-50/50');
+      dropZone.classList.add('border-blue-300');
+    });
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('border-blue-500', 'bg-blue-50/50');
+      dropZone.classList.add('border-blue-300');
+      if (e.dataTransfer.files.length) {
+        handleFile(e.dataTransfer.files[0]);
+      }
+    });
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files.length) {
+        handleFile(e.target.files[0]);
+      }
+    });
+
+    function handleFile(file) {
+      if (!file.type.startsWith('image/')) {
+        // Show error animation
+        dropZone.classList.add('animate__animated', 'animate__headShake');
+        setTimeout(() => {
+          dropZone.classList.remove('animate__animated', 'animate__headShake');
+        }, 1000);
+        
+        // Show error message
+        uploadResult.innerHTML = `
+          <div class="p-3 bg-red-100 border-l-4 border-red-500 text-red-700 rounded">
+            <p>Please upload an image file (JPG, PNG)</p>
+          </div>
+        `;
+        return;
+      }
+      
+      // Check file size (5MB max)
+      if (file.size > 5 * 1024 * 1024) {
+        uploadResult.innerHTML = `
+          <div class="p-3 bg-red-100 border-l-4 border-red-500 text-red-700 rounded">
+            <p>Image size should be less than 5MB</p>
+          </div>
+        `;
+        return;
+      }
+      
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        imagePreview.src = e.target.result;
+        imagePreview.style.display = 'block';
+        detectUploadBtn.disabled = false;
+        
+        // Add success animation
+        dropZone.classList.add('animate__animated', 'animate__tada');
+        setTimeout(() => {
+          dropZone.classList.remove('animate__animated', 'animate__tada');
+        }, 1000);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    detectUploadBtn.addEventListener('click', async () => {
+      const file = fileInput.files[0];
+      if (!file) return;
+      
+      // Show loading state
+      detectUploadBtn.disabled = true;
+      uploadLoader.style.display = 'flex';
+      uploadResult.innerHTML = '<p class="text-center text-gray-500">Processing...</p>';
+      uploadGeminiContainer.classList.add('hidden');
+      uploadProcessedImage.classList.add('hidden');
+      
+      // Add loading animation to button
+      detectUploadBtn.classList.add('animate__animated', 'animate__pulse');
+      
+      const formData = new FormData();
+      formData.append('image', file);
+      
+      try {
+        const response = await fetch('/detect', { method: 'POST', body: formData });
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        
+        const data = await response.json();
+        console.log('Upload API Response:', data);
+        
+        let resultsHTML = '<div class="space-y-4">';
+        if (data.detections && data.detections.length > 0) {
+          resultsHTML += `
+            <h4 class="text-lg font-semibold text-gray-800">Detected Diseases:</h4>
+            <div class="grid grid-cols-1 gap-3">
+              ${data.detections.map(det => {
+                const confidence = Math.min(det.confidence || 0, 100).toFixed(2);
+                const disease = disease_info[det.class] || {};
+                return `
+                  <div class="p-4 bg-white rounded-lg shadow border-l-4 border-blue-500 hover:bg-blue-50 transition-colors">
+                    <div class="flex justify-between items-start">
+                      <div>
+                        <h5 class="font-bold text-blue-600">${det.class}</h5>
+                        <p class="text-sm text-gray-600">Confidence: ${confidence}%</p>
+                      </div>
+                      <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">${confidence}%</span>
+                    </div>
+                    <div class="mt-2 text-sm">
+                      <p class="text-gray-700"><span class="font-medium">Description:</span> ${disease.description}</p>
+                      <p class="text-gray-700 mt-1"><span class="font-medium">Precaution:</span> ${disease.precaution}</p>
+                      <p class="text-gray-700 mt-1"><span class="font-medium">Treatment:</span> ${disease.medicine}</p>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          `;
+        } else {
+          resultsHTML += `
+            <div class="p-4 bg-green-100 border-l-4 border-green-500 rounded-lg">
+              <div class="flex items-center gap-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <div>
+                  <h5 class="font-bold text-green-800">No diseases detected</h5>
+                  <p class="text-green-700">The plant appears healthy</p>
+                </div>
+              </div>
+            </div>
+          `;
+        }
+        resultsHTML += '</div>';
+        uploadResult.innerHTML = resultsHTML;
+        
+        // Handle Gemini response for upload
+        if (data.gemini_response) {
+          uploadGeminiContainer.classList.remove('hidden', 'animate__fadeIn');
+          void uploadGeminiContainer.offsetWidth; // Trigger reflow
+          uploadGeminiContainer.classList.add('animate__animated', 'animate__fadeIn');
+          
+          const geminiContent = uploadGeminiContainer.querySelector('.gemini-content');
+          geminiContent.innerHTML = typeof data.gemini_response === 'string' ? 
+              data.gemini_response : 
+              (data.gemini_response.text || '<p>AI analysis not available</p>');
+        }
+        
+        // Display processed image if available
+        if (data.processed_image) {
+          uploadProcessedImage.innerHTML = `
+            <img src="/processed/${data.processed_image}" alt="Processed image" 
+                 class="w-full h-auto rounded-lg border border-gray-200 shadow-sm">
+          `;
+          uploadProcessedImage.classList.remove('hidden');
+          uploadProcessedImage.classList.add('animate__animated', 'animate__fadeIn');
+        }
+        
+        // Add success animation
+        uploadResult.classList.add('animate__animated', 'animate__fadeIn');
+        
+      } catch (error) {
+        console.error('Upload detection error:', error);
+        uploadResult.innerHTML = `
+          <div class="p-3 bg-red-100 border-l-4 border-red-500 text-red-700 rounded">
+            <p class="font-medium">Detection error:</p>
+            <p>${error.message}</p>
+          </div>
+        `;
+        
+        // Add error animation
+        uploadResult.classList.add('animate__animated', 'animate__headShake');
+      } finally {
+        detectUploadBtn.disabled = false;
+        uploadLoader.style.display = 'none';
+        detectUploadBtn.classList.remove('animate__animated', 'animate__pulse');
+      }
+    });
+
+    // Set current year in footer
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Add animation to page load
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelector('header').classList.add('animate__animated', 'animate__fadeInDown');
+      document.querySelector('main').classList.add('animate__animated', 'animate__fadeIn');
+    });
+  </script>
+</body>
+</html>
