@@ -20,7 +20,7 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(PROCESSED_FOLDER, exist_ok=True)
 
 # YOLO Model Path
-YOLO_MODEL_PATH = "/Users/shubhampund9767/FinalYrProject/FinalYrProject/best1.pt"  # Ensure this is the correct relative path
+YOLO_MODEL_PATH = "https://github.com/shubhampund9325/FinalYrProject/blob/main/best1.pt"  # Ensure this is the correct relative path
 
 # Disease Information Dictionary
 disease_info = {
